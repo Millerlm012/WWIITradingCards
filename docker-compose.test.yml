@@ -1,0 +1,11 @@
+version: "3"
+services:
+
+  tcdb:
+    build:
+      context: ./
+      dockerfile: ./tcdb/image/Dockerfile
+    command: python3 build_db.py
+    volumes:
+      - ./tcdb/srv:/srv
+      - ./data:/data

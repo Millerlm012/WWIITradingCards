@@ -1,0 +1,7 @@
+# python
+venv/
+env/
+
+# db's
+*.db
+*.sqlite3
