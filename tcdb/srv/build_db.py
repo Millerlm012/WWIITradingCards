@@ -151,19 +151,29 @@ def compile_card_urls_and_images(http, con):
                     if '/Images/Large' in href:
                         image_urls.append(f'https://www.tcdb.com{href}')
 
-            assert len(image_urls) == 2, 'Yo, there\'s more than 2 image_urls... wtf.'
-            card['front_image_url'] = image_urls[0]
-            card['back_image_url'] = image_urls[1]
+            if len(image_urls) != 2:
+                cur.execute("INSERT INTO errors (deck_id, card_id, error) VALUES (?, ?, ?)",
+                            (deck['id'], card['card_id'], f'There were {len(image_urls)} found; will need manual intervention.'))
+                card['front_image_url'] = None
+                card['back_image_url'] = None
+            else:
+                card['front_image_url'] = image_urls[0]
+                card['back_image_url'] = image_urls[1]
 
-            # assuming all images .jpg???
-            download_image(card['front_image_url'], f'/data/images/{card["card_id"]}_front.jpg')
-            download_image(card['back_image_url'], f'/data/images/{card["card_id"]}_back.jpg')
+                # assuming all images .jpg???
+                downloaded = os.listdir('/data/images')
+                if f'{card["card_id"]}_front.jpg' not in downloaded:
+                    download_image(card['front_image_url'], f'/data/images/{card["card_id"]}_front.jpg')
+
+                if f'{card["card_id"]}_back.jpg' not in downloaded:
+                    download_image(card['back_image_url'], f'/data/images/{card["card_id"]}_back.jpg')
+
             cur.execute("INSERT INTO cards (card_id, card_name, url, front_image_url, back_image_url, deck_id) VALUES (?, ?, ?, ?, ?, ?)",
                         (card['card_id'], card['card_name'], card['url'], card['front_image_url'], card['back_image_url'], deck['id']))
 
+        con.commit()
         print(f'Completed compilation for {deck["deck_name"]}!')
 
-    con.commit()
     print('Completed compiling ALL decks!')
 
 def compile_urls(con):
