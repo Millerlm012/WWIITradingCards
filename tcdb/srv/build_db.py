@@ -1,6 +1,11 @@
 """
 TCDB: Tradiong Card Database
 - https://www.tcdb.com/ViewSet.cfm/sid/254515/1977-Edito-Service-World-War-II
+
+NOTES:
+The program may get an error when parsing the HTML for the data it's looking for. 
+There's a very good chance that this happens because the request for the HTML failed and there's no error handling for that right now.
+If this happens to you, simply run the contianer again and it'll pick up where it left off.
 """
 
 import os
