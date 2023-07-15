@@ -35,11 +35,17 @@ def init_db():
         print('Created trading.db!')
 
 def check_table_rows(table, con):
+    """
+    Check the count of rows in a specified table.
+    """
     cur = con.cursor()
     count = cur.execute(f'SELECT COUNT(*) FROM {table};').fetchone()[0]
     return count
 
 def check_table_and_create(table, con):
+    """
+    Check to see if a table exists, if not, creates it.
+    """
     print(f'Checking table {table}...')
 
     cur = con.cursor()
@@ -64,9 +70,15 @@ def check_table_and_create(table, con):
     return table_count
 
 def process_card_id(id):
+    """
+    Clean the card id into consistent naming convention.
+    """
     return id.replace('#', '').replace('-', '_').replace(' ', '_')
 
 def compile_deck_urls(http, con):
+    """
+    Compiles deck information into db.
+    """
     if check_table_rows('decks', con) == 107:
         print('Decks table already compiled!')
         return
@@ -92,6 +104,9 @@ def compile_deck_urls(http, con):
     print('Compiled decks table!')
 
 def download_image(url, download_path):
+    """
+    Download the requested image from given URL to the given path. 
+    """
     print(f'Downloading image {url}...')
 
     req = requests.get(url, stream=True)
@@ -104,6 +119,9 @@ def download_image(url, download_path):
     print(f'Downloaded image completed successfully!')
 
 def compile_card_urls_and_images(http, con):
+    """
+    Compile card info and download images to db.
+    """
     print('Compiling cards table...')
 
     cur = con.cursor()
