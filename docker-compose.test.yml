@@ -1,11 +1,21 @@
 version: "3"
+
+x-default: &DEFAULT
+  logging: &LOGDEFAULT
+    driver: "local"
+    options:
+      max-size: "20m"
+      max-file: "3"
+      mode: "non-blocking"
+
 services:
 
   tcdb:
+    <<: *DEFAULT
     build:
       context: ./
       dockerfile: ./tcdb/image/Dockerfile
-    command: python3 build_db.py
+    command: python3 -u build_db.py
     volumes:
       - ./tcdb/srv:/srv
       - ./data:/data

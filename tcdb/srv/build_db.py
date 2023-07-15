@@ -29,7 +29,7 @@ def init_db():
 
         print('Created trading.db!')
 
-def check_db(table, con):
+def check_table_rows(table, con):
     cur = con.cursor()
     count = cur.execute(f'SELECT COUNT(*) FROM {table};').fetchone()[0]
     return count
@@ -56,15 +56,13 @@ def check_table_and_create(table, con):
     else:
         print(f'{table} exists!')
 
-
-    print(f'Table check for {table} complete!')
     return table_count
 
 def process_card_id(id):
     return id.replace('#', '').replace('-', '_').replace(' ', '_')
 
 def compile_deck_urls(http, con):
-    if check_db('decks', con) == 108:
+    if check_table_rows('decks', con) == 107:
         print('Decks table already compiled!')
         return
 
@@ -114,10 +112,29 @@ def compile_card_urls_and_images(http, con):
          'url': deck[5]
          }
         for deck in data]
+    
+    data = cur.execute("""
+                        SELECT
+                            deck_number
+                            , count(c.card_id) number_of_cards_collected
+                        FROM decks d
+                        LEFT JOIN cards c ON d.id = c.deck_id
+                        WHERE deck_number IS NOT NULL
+                        GROUP BY deck_number
+                        """).fetchall()
+    collected = {}
+    for row in data:
+        collected[row[0]] = row[1]
 
     for deck in decks:
         print(f'Compiling cards for deck "{deck["deck_name"]}"...')
 
+        if deck['deck_name'] != 'Explanation of Symbols':
+            if collected[deck['deck_number']] >= 24:
+                print(f'Deck {deck["deck_number"]} has already be compiled! Skipping...')
+                continue
+        
+        print(deck['deck_name'], 'needs compilation. Compiling now.')
         deck_req = requests.get(deck['url'])
         deck_soup = BeautifulSoup(deck_req.text, 'html.parser')
         card_links = []
