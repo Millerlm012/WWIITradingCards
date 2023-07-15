@@ -1,3 +1,4 @@
+-- decks
 CREATE TABLE decks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     full_name TEXT NOT NULL,
@@ -9,13 +10,17 @@ CREATE TABLE decks (
     last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+-- cards
 CREATE TABLE cards (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     card_id TEXT NOT NULL,
     card_name TEXT NOT NULL,
     url TEXT NOT NULL,
-    front_photo TEXT NOT NULL,
-    back_photo TEXT NOT NULL,
-    create TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    front_image_url TEXT NOT NULL,
+    back_image_url TEXT NOT NULL,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deck_id INTEGER NOT NULL,
+    FOREIGN KEY (deck_id)
+        REFERENCES decks (id)
 );

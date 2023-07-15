@@ -5,3 +5,7 @@ env/
 # db's
 *.db
 *.sqlite3
+*-journal
+
+# images
+data/images

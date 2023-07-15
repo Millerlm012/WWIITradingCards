@@ -1,1 +1,0 @@
-# Trading card photos go here.
