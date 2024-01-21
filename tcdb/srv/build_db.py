@@ -201,6 +201,9 @@ def compile_card_urls_and_images(http, con):
                 card['back_image_url'] = image_urls[1]
 
                 # assuming all images .jpg???
+                if not os.path.exists('/data/images'):
+                    os.mkdir('/data/images')
+
                 downloaded = os.listdir('/data/images')
                 if f'{card["card_id"]}_front.jpg' not in downloaded:
                     download_image(card['front_image_url'], f'/data/images/{card["card_id"]}_front.jpg')
