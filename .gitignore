@@ -7,6 +7,9 @@ env/
 *.sqlite3
 *-journal
 
+# golang
+api/srv/api
+
 # images
 data/images
 

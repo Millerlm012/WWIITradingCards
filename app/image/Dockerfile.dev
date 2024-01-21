@@ -1,0 +1,8 @@
+FROM node:lts-alpine3.19
+WORKDIR /srv
+
+# for some reason the Dockerfile doesn't recorgnize the fact that we have the volume mounted via the compose file
+# thus why I'm using the COPY command to get the package*.json in here
+COPY ./srv/wwii_cards/ /srv
+RUN rm -r node_modules && npm install
+CMD ["npm", "run", "dev", "--", "--host"]

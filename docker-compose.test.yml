@@ -9,13 +9,62 @@ x-default: &DEFAULT
       mode: "non-blocking"
 
 services:
+  # NOTE: uncomment to build the database
+  # tcdb:
+  #   <<: *DEFAULT
+  #   build:
+  #     context: ./
+  #     dockerfile: ./tcdb/image/Dockerfile
+  #   command: python3 -u build_db.py
+  #   volumes:
+  #     - ./tcdb/srv:/srv
+  #     - ./data:/data
 
-  tcdb:
+  api:
     <<: *DEFAULT
     build:
-      context: ./
-      dockerfile: ./tcdb/image/Dockerfile
-    command: python3 -u build_db.py
+      context: ./api
+      dockerfile: ./image/Dockerfile.dev
+    command: /srv/api
+    hostname: api
+    expose:
+      - 8000
     volumes:
-      - ./tcdb/srv:/srv
+      - ./api/srv:/srv
       - ./data:/data
+    networks:
+      - wwiinet
+
+  app:
+    <<: *DEFAULT
+    build:
+      context: ./app
+      dockerfile: ./image/Dockerfile.dev
+    ports:
+      - "5173:5173"
+      - "24678:24678"
+    depends_on:
+      - api
+    volumes:
+      - ./app/srv/wwii_cards/src:/srv/src
+    networks:
+      - wwiinet
+
+  web:
+    image: nginx:stable-alpine3.17
+    hostname: web
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - api
+      - app
+    volumes:
+      - ./nginx/dev.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - wwiinet
+
+networks:
+  wwiinet:
+    driver: bridge

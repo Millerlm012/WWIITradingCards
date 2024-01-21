@@ -1,0 +1,14 @@
+# build
+FROM node:lts-alpine3.19 AS build
+WORKDIR /tmp
+COPY ./srv/minced /tmp
+RUN npm install && npm run build
+WORKDIR /srv
+RUN cp -r /tmp/build . && cp -r /tmp/node_modules .
+RUN cp /tmp/package*.json /srv
+
+# deploy
+FROM node:lts-alpine3.19
+WORKDIR /srv
+COPY --from=build /srv /srv
+CMD ["node", "build/index.js"]
