@@ -8,6 +8,7 @@ import (
 	"wwii_cards/api/images"
 	"wwii_cards/api/utils"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/glebarez/go-sqlite"
 )
@@ -19,12 +20,14 @@ func checkApi(c *gin.Context) {
 }
 
 func main() {
-	slog.Info("Starting WWII Trading Cards API")
-	router := gin.Default()
-
 	slog.Info("Connecting to database.")
 	utils.ConnectDatabase()
 	slog.Info(`Connected sucessfully!`)
+
+	slog.Info("Starting WWII Trading Cards API")
+	router := gin.Default()
+	wwiiCors := utils.GetCors()
+	router.Use(cors.New(wwiiCors))
 
 	router.GET("/", checkApi)
 	images.SetupImageRoutes(router)

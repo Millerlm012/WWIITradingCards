@@ -7,3 +7,9 @@
 - 106 decks (decks are numbered 01-88 then jumps to 101-118)
 - 24 cards / deck
 - Total: 2,544 cards
+
+Grid:
+- the frontend will be a <canvas> element that is a grid holding all images on it (2,544 -> X (width) by Y (height))
+
+TODO:
+- add card # as a column to Card table so we can order by card # easily to keep photos in consistent order

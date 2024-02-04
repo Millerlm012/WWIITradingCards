@@ -9,7 +9,7 @@ import (
 
 func GetAllDecks(c *gin.Context) {
 	var decks []utils.Deck
-	utils.DB.Find(&decks)
+	utils.DB.Find(&decks).Order("id ASC")
 
 	c.JSON(http.StatusOK, gin.H{"decks": decks})
 }

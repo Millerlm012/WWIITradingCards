@@ -29,6 +29,8 @@ services:
     hostname: api
     expose:
       - 8000
+    environment:
+      ENV: dev
     volumes:
       - ./api/srv:/srv
       - ./data:/data
