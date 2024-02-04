@@ -193,7 +193,7 @@ def compile_card_urls_and_images(http, con):
 
             if len(image_urls) != 2:
                 cur.execute("INSERT INTO errors (deck_id, card_id, error) VALUES (?, ?, ?)",
-                            (deck['id'], card['card_id'], f'There were {len(image_urls)} found; will need manual intervention.'))
+                            (deck['id'], card['card_id'], f'There were {len(image_urls)} image(s) found; will need manual intervention.'))
                 card['front_image_url'] = None
                 card['back_image_url'] = None
             else:
